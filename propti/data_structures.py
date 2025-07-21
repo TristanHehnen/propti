@@ -40,7 +40,8 @@ class OptimiserProperties:
                  db_type: str = 'csv',
                  db_precision=np.float64,
                  num_subprocesses: int = 1,
-                 mpi: bool = False):
+                 mpi: bool = False,
+                 optimization_direction="minimize"):
         """
         Constructor.
         :param algorithm: choose spotpy algorithm, default: sceua,
@@ -70,6 +71,10 @@ class OptimiserProperties:
             parameter 'parallel'. If set to True 'parallel' is set to 'mpi'
             otherwise it is set to 'seq' (use one core).
             Default: False
+        :param optimization_direction: Parameter that gets provided to SPOTPY,
+            via spotpy_wrapper.py (run_optimisation), to _algorithm. Options are
+            'minimize', 'maximize' and 'grid'.
+            Default: minimize
         """
         self.algorithm = algorithm
         self.repetitions = repetitions
@@ -91,6 +96,7 @@ class OptimiserProperties:
             self.execution_mode = 'multi-processing'
 
         self.mpi = mpi
+        self.optimization_direction = optimization_direction
 
     def upgrade(self) -> List:
         """
@@ -126,7 +132,8 @@ class OptimiserProperties:
                "\ndb_precision: {}" \
                "\nexecution mode: {}" \
                "\nnumber of sub-processes: {}" \
-               "\nmpi mode: {}\n".format(self.algorithm,
+               "\nmpi mode: {}" \
+               "\noptimization direction: {}\n".format(self.algorithm,
                                          self.repetitions,
                                          be,
                                          self.max_loop_inc,
@@ -136,7 +143,8 @@ class OptimiserProperties:
                                          self.db_precision,
                                          self.execution_mode,
                                          self.num_subprocesses,
-                                         self.mpi)
+                                         self.mpi,
+                                         self.optimization_direction)
 
 
 #################
