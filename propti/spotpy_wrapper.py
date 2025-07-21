@@ -252,12 +252,14 @@ def run_optimisation(params: ParameterSet,
         results = sampler.sample(opt.repetitions)
 
     elif opt.algorithm == 'fast':
-        sampler = spotpy.algorithms.fast(spot,
-                                         dbname=opt.db_name,
-                                         dbformat='csv',
-                                         parallel=parallel,
-                                         breakpoint=break_point,
-                                         backup_every_rep=opt.backup_every)
+        sampler = spotpy.algorithms.fast(
+            spot,
+            dbname=opt.db_name,
+            dbformat='csv',
+            parallel=parallel,
+            breakpoint=break_point,
+            backup_every_rep=opt.backup_every,
+            optimization_direction=opt.optimization_direction)
         results = sampler.sample(opt.repetitions)
     else:
         return(print('No valid optimization algorithm selected'))
@@ -266,6 +268,13 @@ def run_optimisation(params: ParameterSet,
         pars = sampler.status.params_min
     elif sampler.status.optimization_direction == 'maximize':
         pars = sampler.status.params_max
+    elif sampler.status.optimization_direction == 'grid':
+        pars = sampler.status.params_max
+    else:
+        print("* Something went wrong: spotpy _algorithm 'optimization_direction' should be either 'minimize', 'maximize' or 'grid'. ")
+        print(sampler.status)
+        print("+++++++++\n")
+
     for i in range(len(params)):
         params[i].value = pars[i]
     for s in setups:
